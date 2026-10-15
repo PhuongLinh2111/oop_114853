@@ -1,0 +1,325 @@
+#include <iostream>
+#include <string>
+using namespace std;
+bool isMatch(string s1, string s2) {
+    if (s1.length() != s2.length()) return false;
+    for (size_t i = 0; i < s1.length(); i++) {
+        if (tolower(s1[i]) != tolower(s2[i])) return false;
+    }
+    return true;
+}
+class Vehicle {
+private:
+    int vehicleID;
+    string vehicleType;
+    int entryTime;
+    int parkingDuration;
+    double parkingFee;
+    bool isOccupied;
+public:
+    Vehicle() {
+        vehicleID = 0;
+        vehicleType = "";
+        entryTime = 0;
+        parkingDuration = 0;
+        parkingFee = 0.0;
+        isOccupied = false;
+    }
+    Vehicle(int id, string type, int time, int duration) {
+        vehicleID = id;
+        vehicleType = type;
+        entryTime = time;
+        parkingDuration = duration;
+        isOccupied = true;
+        calculateFee(); 
+    }
+
+    int getVehicleID() { return vehicleID; }
+    void setVehicleID(int id) { vehicleID = id; }
+    string getVehicleType() { return vehicleType; }
+    void setVehicleType(string type) { vehicleType = type; calculateFee(); }
+    int getEntryTime() { return entryTime; }
+    void setEntryTime(int time) { entryTime = time; calculateFee(); }
+    int getParkingDuration() { return parkingDuration; }
+    void setParkingDuration(int duration) { parkingDuration = duration; calculateFee(); }
+    double getParkingFee() { return parkingFee; }
+    bool getIsOccupied() { return isOccupied; }
+    void setIsOccupied(bool status) { isOccupied = status; }
+    void calculateFee() {
+        if (!isOccupied) {
+            parkingFee = 0.0;
+            return;
+        }
+        double giacobantheogio = 0.0;
+        if (vehicleType == "Car" || vehicleType == "car" || vehicleType == "CAR") {
+            giacobantheogio = 6.00;
+        } else if (vehicleType == "Motorcycle" || vehicleType == "motorcycle" || vehicleType == "MOTORCYCLE") {
+            giacobantheogio = 4.00;
+        } else if (vehicleType == "Bicycle" || vehicleType == "bicycle" || vehicleType == "BICYCLE") {
+            giacobantheogio = 2.00;
+        }
+        bool giocaodiem = (entryTime >= 6 && entryTime <= 9) || (entryTime >= 15 && entryTime <= 18);
+        double gia2giodautien = giocaodiem ? (giacobantheogio * 1.30) : (giacobantheogio * 0.95);
+        double giothu3trodi = giacobantheogio * 0.90;
+        if (parkingDuration <= 2) {
+            parkingFee = parkingDuration * gia2giodautien;
+        } else {
+            int haigiodau = 2;
+            int sogiothem = parkingDuration - 2;
+            parkingFee = (haigiodau * gia2giodautien) + (sogiothem * giothu3trodi);
+        }
+    }
+    void display() {
+        if (isOccupied) {
+            cout << "+ Xe ID: " << vehicleID
+                 << " | Loại: " << vehicleType
+                 << " | Giờ vào: " << entryTime << "h"
+                 << " | Đỗ trong: " << parkingDuration << "h"
+                 << " | Tiền đỗ: $" << parkingFee << endl;
+        }
+    }
+};
+class ParkingLot {
+private:
+    int parkID;
+    char size;
+    Vehicle vehicle1;
+    Vehicle vehicle2;
+    Vehicle vehicle3;
+    bool hasVehicle1;
+    bool hasVehicle2;
+    bool hasVehicle3;
+public:
+    ParkingLot() {
+        parkID = 0; 
+        size = 'S';
+        hasVehicle1 = false; 
+        hasVehicle2 = false; 
+        hasVehicle3 = false;
+    }
+    ParkingLot(int id, char s) {
+        parkID = id; 
+        size = toupper(s);
+        hasVehicle1 = false; 
+        hasVehicle2 = false; 
+        hasVehicle3 = false;
+    }
+    int getParkID() { return parkID; }
+    void setParkID(int id) { parkID = id; }
+    char getSize() { return size; } 
+    void setSize(char s) { size = toupper(s); }
+    int getMaxCapacity() {
+        char s = toupper(size);
+        if (s == 'S') return 1;
+        if (s == 'M') return 2;
+        if (s == 'L') return 3;
+        return 0;
+    }
+    bool addVehicle(const Vehicle& v) {
+        int soxe = getMaxCapacity();
+        if (soxe >= 1 && !hasVehicle1) {
+            vehicle1 = v;
+            hasVehicle1 = true;
+            return true;
+        }
+        if (soxe >= 2 && !hasVehicle2) {
+            vehicle2 = v;
+            hasVehicle2 = true;
+            return true;
+        }
+        if (soxe >= 3 && !hasVehicle3) {
+            vehicle3 = v;
+            hasVehicle3 = true;
+            return true;
+        }
+        return false;
+    }
+    bool removeVehicle(int vID) {
+        if (hasVehicle1 && vehicle1.getVehicleID() == vID) {
+            hasVehicle1 = false;
+            return true;
+        }
+        if (hasVehicle2 && vehicle2.getVehicleID() == vID) {
+            hasVehicle2 = false;
+            return true;
+        }
+        if (hasVehicle3 && vehicle3.getVehicleID() == vID) {
+            hasVehicle3 = false;
+            return true;
+        }
+        return false;
+    }
+    void displayLotInfo() {
+        cout << "Bãi đỗ ID: " << parkID << " | Kích thước: " << size << endl;
+        int count = 0;
+        if (hasVehicle1) { vehicle1.display(); count++; } 
+        if (hasVehicle2) { vehicle2.display(); count++; } 
+        if (hasVehicle3) { vehicle3.display(); count++; }
+        if (count == 0) {
+            cout << "   (Hiện tại bãi trống)" << endl;
+        }
+    }
+    void displayVehiclesByType(string type) {
+        if (hasVehicle1 && isMatch(vehicle1.getVehicleType(), type)) {
+            cout << "Tại Bãi ID " << parkID << ": ";
+            vehicle1.display();
+        }
+        if (hasVehicle2 && isMatch(vehicle2.getVehicleType(), type)) {
+            cout << "Tại Bãi ID " << parkID << ": ";
+            vehicle2.display();
+        }
+        if (hasVehicle3 && isMatch(vehicle3.getVehicleType(), type)) {
+            cout << "Tại Bãi ID " << parkID << ": ";
+            vehicle3.display();
+        }
+    }
+    void getStatsByType(string targetType, double &totalFee, int &count) {
+        if (hasVehicle1 && isMatch(vehicle1.getVehicleType(), targetType)) { totalFee += vehicle1.getParkingFee(); count++; }
+        if (hasVehicle2 && isMatch(vehicle2.getVehicleType(), targetType)) { totalFee += vehicle2.getParkingFee(); count++; }
+        if (hasVehicle3 && isMatch(vehicle3.getVehicleType(), targetType)) { totalFee += vehicle3.getParkingFee(); count++; }
+    }
+};
+class SystemInterface {
+private:
+    ParkingLot parkingLot1;
+    ParkingLot parkingLot2;
+    ParkingLot parkingLot3;
+    bool hasLot1;
+    bool hasLot2;
+    bool hasLot3;
+public:
+    SystemInterface() {
+        hasLot1 = false; 
+        hasLot2 = false; 
+        hasLot3 = false;
+    }
+    void createLot() {
+        if (hasLot1 && hasLot2 && hasLot3) {
+            cout << "=> Không thể tạo thêm \n";
+            return;
+        }
+        int id; char size;
+        cout << "Nhập mã bãi đỗ: "; cin >> id;
+        cout << "Nhập kích thước: "; cin >> size;
+        ParkingLot newLot(id, size); 
+        if (!hasLot1) { parkingLot1 = newLot; hasLot1 = true; }
+        else if (!hasLot2) { parkingLot2 = newLot; hasLot2 = true; }
+        else if (!hasLot3) { parkingLot3 = newLot; hasLot3 = true; }
+        cout << "=> Đã tạo bãi đỗ ID " << id << " thành công\n";
+    }
+    void addVehicle() {
+        if (!hasLot1 && !hasLot2 && !hasLot3) {
+            cout << "=> Chưa có bãi đỗ nào trong hệ thống!\n";
+            return;
+        }
+        int id, time, duration; string type;
+        cout << "Nhập mã xe: "; cin >> id;
+        cout << "Nhập loại xe: "; cin >> type;
+        cout << "Nhập giờ vào: "; cin >> time;
+        cout << "Nhập số giờ gửi: "; cin >> duration;
+        Vehicle v(id, type, time, duration); 
+        if (hasLot1 && parkingLot1.addVehicle(v)) {
+            cout << "=> Đã thêm xe vào Bãi ID " << parkingLot1.getParkID() << endl;
+            return;
+        }
+        if (hasLot2 && parkingLot2.addVehicle(v)) {
+            cout << "=> Đã thêm xe vào Bãi ID " << parkingLot2.getParkID() << endl;
+            return;
+        }
+        if (hasLot3 && parkingLot3.addVehicle(v)) {
+            cout << "=> Đã thêm xe vào Bãi ID " << parkingLot3.getParkID() << endl;
+            return;
+        }
+        cout << "=> Lỗi\n";
+    }
+    void removeLot() {
+        int id;
+        cout << "Nhập mã bãi cần xóa: "; cin >> id;
+        if (hasLot1 && parkingLot1.getParkID() == id) { hasLot1 = false; cout << "=> Đã xóa Bãi ID " << id << endl; return; }
+        if (hasLot2 && parkingLot2.getParkID() == id) { hasLot2 = false; cout << "=> Đã xóa Bãi ID " << id << endl; return; }
+        if (hasLot3 && parkingLot3.getParkID() == id) { hasLot3 = false; cout << "=> Đã xóa Bãi ID " << id << endl; return; }
+        cout << "=> Không tìm thấy bãi đỗ ID " << id << endl;
+    }
+    void removeVehicle() {
+        int vID;
+        cout << "Nhập mã xe cần lấy ra: "; cin >> vID;
+        if (hasLot1 && parkingLot1.removeVehicle(vID)) { cout << "=> Đã lấy xe ra khỏi bãi thành công!\n"; return; }
+        if (hasLot2 && parkingLot2.removeVehicle(vID)) { cout << "=> Đã lấy xe ra khỏi bãi thành công!\n"; return; }
+        if (hasLot3 && parkingLot3.removeVehicle(vID)) { cout << "=> Đã lấy xe ra khỏi bãi thành công!\n"; return; }
+        cout << "=> Không tìm thấy xe có mã này\n";
+    }
+    void displayAll() {
+        cout << "\nDanh sách tất cả các bãi đỗ xe\n";
+        if (hasLot1) parkingLot1.displayLotInfo();
+        if (hasLot2) parkingLot2.displayLotInfo();
+        if (hasLot3) parkingLot3.displayLotInfo();
+        if (!hasLot1 && !hasLot2 && !hasLot3) cout << "Chưa có bãi đỗ nào\n";
+    }
+    void displayLotDetails() {
+        int id;
+        cout << "Nhập mã bãi đỗ cần xem: "; cin >> id;
+        if (hasLot1 && parkingLot1.getParkID() == id) { parkingLot1.displayLotInfo(); return; }
+        if (hasLot2 && parkingLot2.getParkID() == id) { parkingLot2.displayLotInfo(); return; }
+        if (hasLot3 && parkingLot3.getParkID() == id) { parkingLot3.displayLotInfo(); return; }
+        cout << "=> Không tìm thấy bãi đỗ này\n";
+    }
+    void listVehiclesByType() {
+        string type;
+        cout << "Nhập loại xe cần tìm: "; cin >> type;
+        cout << "\nKết quả" << type << " ---\n";
+        if (hasLot1) parkingLot1.displayVehiclesByType(type);
+        if (hasLot2) parkingLot2.displayVehiclesByType(type);
+        if (hasLot3) parkingLot3.displayVehiclesByType(type);
+    }
+    void displayReport() {
+        cout << "\nBáo cáo\n";
+        string types[3] = {"Car", "Motorcycle", "Bicycle"};
+        for(int i = 0; i < 3; i++) {
+            double totalFee = 0;
+            int count = 0;
+            if (hasLot1) parkingLot1.getStatsByType(types[i], totalFee, count);
+            if (hasLot2) parkingLot2.getStatsByType(types[i], totalFee, count);
+            if (hasLot3) parkingLot3.getStatsByType(types[i], totalFee, count);
+            cout << "Loại xe [" << types[i] << "]: ";
+            if (count > 0) cout << "Số lượng = " << count << " | Trung bình phí = $" << (totalFee / count) << endl;
+            else cout << "Chưa có xe nào" << endl;
+        }
+    }
+    void Menu() {
+        int choice = 0;
+        while (choice != 9) { 
+            cout << "\nQUẢN LÝ BÃI ĐỖ XE\n";
+            cout << "1. Tạo Bãi đỗ xe mới\n";
+            cout << "2. Thêm xe vào bãi đỗ\n";
+            cout << "3. Xóa một Bãi đỗ xe\n";
+            cout << "4. Lấy xe ra khỏi bãi đỗ\n";
+            cout << "5. Hiển thị danh sách tất cả các Bãi đỗ xe\n";
+            cout << "6. Hiển thị danh sách xe theo bãi cụ thể\n";
+            cout << "7. Liệt kê xe theo loại phương tiện\n";
+            cout << "8. Xem báo cáo tóm tắt phí đỗ xe trung bình\n";
+            cout << "9. Thoát chương trình\n";
+            cout << "Lựa chọn của bạn: ";
+            cin >> choice;
+            switch (choice) {
+                case 1: createLot(); break;           
+                case 2: addVehicle(); break;          
+                case 3: removeLot(); break;           
+                case 4: removeVehicle(); break;       
+                case 5: displayAll(); break;          
+                case 6: displayLotDetails(); break;   
+                case 7: listVehiclesByType(); break;  
+                case 8: displayReport(); break;       
+                case 9: 
+                    cout << "Đã thoát chương trình\n"; 
+                    break;
+                default: 
+                    cout << "Lỗi\n";
+            }
+        }
+    }
+};
+int main() {
+    SystemInterface app; 
+    app.Menu(); 
+    return 0; 
+}
