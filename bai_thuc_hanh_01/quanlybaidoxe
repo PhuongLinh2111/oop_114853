@@ -84,9 +84,31 @@ public:
 	}
 	bai_xe::bai_xe(int ma,char kt){
 		this->ma_bai = ma;
-		this->kich-thuoc = kt;
+		this->kich_thuoc = kt;
 	}
 };
+class SystemInterface{
+private:
+	bai_xe bai1,bai2,bai3;
+	bool co1,co2,co3;
+public:
+    SystemInterface();
+	void runMenu();	
+};
+    bool bai_xe::them(phuong_tien v){
+    	int cap=(kich_thuoc == 'S')?1:(kich_thuoc =='M')?2:3;
+    	if(cap>=1&&!co1){
+    		pt1=v;co1=true;return true;
+		}
+		if(cap>=2&&!co2){
+			pt2=v;co2=true;return true;
+		}
+		if(cap>=3&&!co3){
+			pt3=v;co3=true;return true;
+		}
+		return false;
+	}
+	bool bai_xe::xoa()
 int main() {
     SystemInterface app; 
     app.Menu(); 
