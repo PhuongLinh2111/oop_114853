@@ -11,12 +11,19 @@ public:
 	phuong_tien();
 	phuong_tien(int ma, string loai, int gio, int tg);
 	
-	int lay_ma_xa() const;
+	int lay_ma_xe() const;
 	string lay_loai_xe() const;
 	double tinh_phi() const;
 	void hien_thi() const;
-};
-phuong_tien::phuong_tien(){
+	
+int phuong_tien::lay_ma_xe() const{
+    return ma_xe;
+}
+string phuong_tien::lay_ma_xe() const{
+    return loai_xe;
+}
+	
+	phuong_tien::phuong_tien(){
 	ma_xe=0;
 	loai_xe="a";
 	gio_vao=0;
@@ -28,6 +35,58 @@ phuong_tien::phuong_tien(int ma, string loai, int gio, int tg);{
     gio_vao = gio;
     tg_do = tg;
 }
+};
+
+
+double phuong_tien::tinh_phi() const{
+	double dongia = 0;
+	if(loaixe == "Car"){
+		dngia = 6;
+	}
+	if(loaixe == "Motorcycle"){
+		dongia= 4;
+	}
+	if(loaixe == "Bicycle"){
+		dongia = 2;
+	}
+	bool giocaodiem = (giovao >= 6 && giovao <= 9) ||(giovao>= 15&& giovao<=24)
+	double heso = 0.95;
+	if(giocaodiem) heso = 1.3;
+	
+	int giodau = thoigiando;
+	int giosau = 0 ;
+	if(thoigiando>2){
+		giodau=2;
+		giosau = thoigiando-2;
+	}
+	phidoxe = giodau*dongia*heso+giosau*dongia*0.9;
+}
+class bai_xe(){
+private:
+	int ma_bai;
+	char kich_thuoc;
+	phuong_tien pt1,pt2,pt3;
+	bool co1,co2,co3;
+public:
+    bai_xe();
+	bai_xe(int ma,char kt);
+	
+	int lay_ma() const;
+	bool them(phuong_tien v);
+	bool xoa(int ma_xe);
+	bool chua(int ma_xe) const;
+	void hien_thi() const;
+	bool co_loai(string loai,int& dem,double& tong) const;	
+	
+	bai_xe::bai_xe(){
+		ma_bai=0;
+		kich_thuoc=0;
+	}
+	bai_xe::bai_xe(int ma,char kt){
+		this->ma_bai = ma;
+		this->kich-thuoc = kt;
+	}
+};
 int main() {
     SystemInterface app; 
     app.Menu(); 
